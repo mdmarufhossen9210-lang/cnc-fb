@@ -12,6 +12,7 @@ const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
 
 // Firebase Admin Initialization (for Render)
 let db = null;
+let bucket = null;
 try {
   const sa = process.env.FIREBASE_SERVICE_ACCOUNT;
   if (sa) {
@@ -23,6 +24,15 @@ try {
       });
     }
     db = admin.firestore();
+    try {
+      bucket = admin.storage().bucket();
+      if (bucket && bucket.name) {
+        console.log('✅ Firebase Storage bucket:', bucket.name);
+      }
+    } catch (be) {
+      console.log('⚠️ Firebase Storage not configured');
+      bucket = null;
+    }
     console.log('✅ Firebase initialized');
   } else {
     console.log('⚠️ FIREBASE_SERVICE_ACCOUNT not set; proceeding without Firebase');
@@ -542,16 +552,29 @@ app.post('/api/request-password-reset', async (req, res) => {
     const resetCode = generateResetCode();
     const expiryTime = Date.now() + (10 * 60 * 1000); // 10 minutes expiry
     
-    // Store reset code with expiry
-    resetCodes.set(phoneNumber, {
-      code: resetCode,
-      expiry: expiryTime,
-      user: {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        phoneNumber: user.phoneNumber
-      }
-    });
+    // Store reset code with expiry (Firestore preferred)
+    if (db) {
+      await db.collection('passwordResets').doc(phoneNumber).set({
+        code: resetCode,
+        expiry: expiryTime,
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber
+        },
+        createdAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+    } else {
+      resetCodes.set(phoneNumber, {
+        code: resetCode,
+        expiry: expiryTime,
+        user: {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          phoneNumber: user.phoneNumber
+        }
+      });
+    }
     
     // Send SMS with reset code
     const smsMessage = `CNC FB: Your password reset code is ${resetCode}. Valid for 10 minutes. Do not share this code with anyone.`;
@@ -591,14 +614,24 @@ app.post('/api/verify-reset-code', async (req, res) => {
       return res.status(400).json({ error: 'Phone number and code are required' });
     }
     
-    const resetData = resetCodes.get(phoneNumber);
+    let resetData = null;
+    if (db) {
+      const snap = await db.collection('passwordResets').doc(phoneNumber).get();
+      resetData = snap.exists ? snap.data() : null;
+    } else {
+      resetData = resetCodes.get(phoneNumber);
+    }
     
     if (!resetData) {
       return res.status(404).json({ error: 'No reset request found for this phone number' });
     }
     
     if (Date.now() > resetData.expiry) {
-      resetCodes.delete(phoneNumber);
+      if (db) {
+        await db.collection('passwordResets').doc(phoneNumber).delete();
+      } else {
+        resetCodes.delete(phoneNumber);
+      }
       return res.status(400).json({ error: 'Reset code has expired' });
     }
     
@@ -632,14 +665,24 @@ app.post('/api/reset-password', async (req, res) => {
       return res.status(400).json({ error: 'Password must be at least 6 characters long' });
     }
     
-    const resetData = resetCodes.get(phoneNumber);
+    let resetData = null;
+    if (db) {
+      const snap = await db.collection('passwordResets').doc(phoneNumber).get();
+      resetData = snap.exists ? snap.data() : null;
+    } else {
+      resetData = resetCodes.get(phoneNumber);
+    }
     
     if (!resetData) {
       return res.status(404).json({ error: 'No reset request found for this phone number' });
     }
     
     if (Date.now() > resetData.expiry) {
-      resetCodes.delete(phoneNumber);
+      if (db) {
+        await db.collection('passwordResets').doc(phoneNumber).delete();
+      } else {
+        resetCodes.delete(phoneNumber);
+      }
       return res.status(400).json({ error: 'Reset code has expired' });
     }
     
@@ -661,7 +704,11 @@ app.post('/api/reset-password', async (req, res) => {
     }
     
     // Remove reset code
-    resetCodes.delete(phoneNumber);
+    if (db) {
+      await db.collection('passwordResets').doc(phoneNumber).delete();
+    } else {
+      resetCodes.delete(phoneNumber);
+    }
     
     console.log(`Password reset successful for ${phoneNumber}`);
     
@@ -681,9 +728,42 @@ if (!IPFS_ENABLED && !CLOUDINARY_ENABLED && !fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
 
-// Helper function to upload file to IPFS/Pinata (Unlimited), Cloudinary, or local storage
+// Helper function to upload file to Firebase Storage (preferred), IPFS/Pinata, Cloudinary, or local storage
 async function uploadFile(file, folder = 'uploads') {
-  // Priority 1: IPFS/Pinata (Unlimited Free Storage)
+  // Priority 1: Firebase Storage (if configured)
+  if (bucket) {
+    try {
+      const destPath = `${folder}/${file.filename}`;
+      const [uploaded] = await bucket.upload(file.path, {
+        destination: destPath,
+        metadata: {
+          contentType: file.mimetype
+        }
+      });
+      // Delete local temp file
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+      // Try to get a long-lived signed URL
+      let url = null;
+      try {
+        const [signedUrl] = await uploaded.getSignedUrl({ action: 'read', expires: '03-17-2099' });
+        url = signedUrl;
+      } catch (e) {
+        // Fallback to gs:// URL (client must handle access rules)
+        url = `gs://${bucket.name}/${destPath}`;
+      }
+      return {
+        url,
+        type: file.mimetype
+      };
+    } catch (error) {
+      console.error('Firebase Storage upload error:', error.message || error);
+      // Fallback to next option
+    }
+  }
+
+  // Priority 2: IPFS/Pinata (Unlimited Free Storage)
   if (IPFS_ENABLED && PINATA_API_KEY && PINATA_SECRET_KEY) {
     try {
       const FormData = require('form-data');
@@ -732,7 +812,7 @@ async function uploadFile(file, folder = 'uploads') {
     }
   }
   
-  // Priority 2: Cloudinary (25GB Free Storage)
+  // Priority 3: Cloudinary (25GB Free Storage)
   if (CLOUDINARY_ENABLED && cloudinary) {
     try {
       const result = await cloudinary.uploader.upload(file.path, {
@@ -757,7 +837,7 @@ async function uploadFile(file, folder = 'uploads') {
     }
   }
   
-  // Priority 3: Local Storage (Fallback)
+  // Priority 4: Local Storage (Fallback)
   const url = `${BASE_URL}/uploads/${file.filename}`;
   return {
     url: url,
