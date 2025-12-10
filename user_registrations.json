@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1754762331144",
+    "step": "name",
+    "firstName": "md maruf",
+    "lastName": "yt",
+    "timestamp": "2025-08-09T17:58:51.072Z"
+  },
+  {
+    "id": "1754762344867",
+    "step": "dob",
+    "month": "12",
+    "day": "24",
+    "year": "2005",
+    "timestamp": "2025-08-09T17:59:04.864Z"
+  },
+  {
+    "id": "1754762366842",
+    "step": "account",
+    "phoneNumber": "01788458049",
+    "password": "Marufyt@260",
+    "timestamp": "2025-08-09T17:59:26.841Z"
+  },
+  {
+    "id": "1754762373002",
+    "step": "completed",
+    "firstName": "md maruf",
+    "lastName": "yt",
+    "month": "12",
+    "day": "24",
+    "year": "2005",
+    "phoneNumber": "01788458049",
+    "password": "Marufyt@260",
+    "accountStatus": "completed",
+    "timestamp": "2025-08-09T17:59:32.999Z"
+  }
+]

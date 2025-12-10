@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1754664518012,
+    "type": "withdraw",
+    "amount": 1000,
+    "method": "bkash",
+    "account": "01788458049",
+    "commission": 20,
+    "finalAmount": 980,
+    "status": "rejected",
+    "timestamp": "2025-08-08T14:48:38.012Z",
+    "userName": "NIPA 1"
+  },
+  {
+    "id": 1754665488546,
+    "type": "withdraw",
+    "amount": 20,
+    "method": "bkash",
+    "account": "01788458049",
+    "commission": 0.4,
+    "finalAmount": 19.6,
+    "status": "approved",
+    "timestamp": "2025-08-08T15:04:48.546Z",
+    "userName": "NIPA 1"
+  },
+  {
+    "id": 1754665630354,
+    "type": "withdraw",
+    "amount": 120,
+    "method": "nagad",
+    "account": "01788458049",
+    "commission": 2.4,
+    "finalAmount": 117.6,
+    "status": "approved",
+    "timestamp": "2025-08-08T15:07:10.354Z",
+    "userName": "NIPA 1"
+  },
+  {
+    "id": 1754936277146,
+    "type": "withdraw",
+    "amount": 200,
+    "method": "bkash",
+    "account": "01788458049",
+    "commission": 4,
+    "finalAmount": 196,
+    "status": "rejected",
+    "timestamp": "2025-08-11T18:17:57.146Z",
+    "userName": "vgcn"
+  },
+  {
+    "id": 1754937247187,
+    "type": "withdraw",
+    "amount": 120,
+    "method": "bkash",
+    "account": "01788458049",
+    "commission": 2.4,
+    "finalAmount": 117.6,
+    "status": "approved",
+    "timestamp": "2025-08-11T18:34:07.187Z",
+    "userName": "vgcn"
+  }
+]

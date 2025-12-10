@@ -1,0 +1,72 @@
+[
+  {
+    "name": "MARUF",
+    "profileImage": "http://localhost:5000/uploads/1752848990932-4.jpg",
+    "background": "",
+    "balance": 0,
+    "updated": 1752848990935
+  },
+  {
+    "name": "maruf yt",
+    "profileImage": "http://localhost:5000/uploads/1752849449187-CNCFBSoftwareLogoDesign.png",
+    "background": "",
+    "balance": 0,
+    "updated": 1752849449224
+  },
+  {
+    "name": "147852ghj",
+    "profileImage": "http://localhost:5000/uploads/1752854484234-WhatsApp2025-07-11225059-_d00b6c7b.jpg",
+    "background": "http://localhost:5000/uploads/1752854479881-1.jpg",
+    "balance": 0,
+    "updated": 1752854484237
+  },
+  {
+    "name": "NIPA",
+    "profileImage": "http://localhost:5000/uploads/1753038600615-WhatsApp2025-07-11021658-_618cfbbb.jpg",
+    "background": "http://localhost:5000/uploads/1753038604911-WhatsApp2025-07-11225059-_d00b6c7b.jpg",
+    "balance": 0,
+    "updated": 1753038604915
+  },
+  {
+    "name": "NIPA 1",
+    "profileImage": "http://localhost:5000/uploads/1754673532436-WhatsApp2025-07-11225059-_d00b6c7b.jpg",
+    "background": "http://localhost:5000/uploads/1754673535638-WhatsApp2025-07-11225059-_d00b6c7b.jpg",
+    "balance": 380,
+    "updated": 1754677371344
+  },
+  {
+    "name": "User Name",
+    "profileImage": "http://localhost:5000/uploads/1765312722029-1754676367379-WhatsApp2025-07-11225059-_d00b6c7b.jpg",
+    "background": "http://localhost:5000/uploads/1765312725386-1754676367379-WhatsApp2025-07-11225059-_d00b6c7b.jpg",
+    "balance": 500,
+    "updated": 1765312725391
+  },
+  {
+    "name": "vgcn",
+    "profileImage": "",
+    "background": "",
+    "balance": 30,
+    "updated": 1754937247202
+  },
+  {
+    "name": "Test Seller",
+    "profileImage": "",
+    "background": "",
+    "balance": 20,
+    "updated": 1754674254501
+  },
+  {
+    "name": "jui",
+    "profileImage": "",
+    "background": "",
+    "balance": 250,
+    "updated": 1754677413958
+  },
+  {
+    "name": "md maruf yt",
+    "profileImage": "http://localhost:5000/uploads/1765369169632-1754676367379-WhatsApp2025-07-11225059-_d00b6c7b.jpg",
+    "background": "http://localhost:5000/uploads/1765369173346-1754676367379-WhatsApp2025-07-11225059-_d00b6c7b.jpg",
+    "updated": 1765369174416,
+    "balance": 0
+  }
+]

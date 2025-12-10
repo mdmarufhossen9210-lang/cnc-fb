@@ -1,0 +1,27 @@
+{
+  "name": "cnc-fb",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cloudinary": "^1.41.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "dxf-parser": "^1.1.2",
+    "dxf-to-svg": "^2.4.5",
+    "express": "^5.1.0",
+    "form-data": "^4.0.0",
+    "multer": "^2.0.1",
+    "twilio": "^4.23.0",
+    "firebase-admin": "^12.5.0",
+    "bcrypt": "^5.1.1"
+  }
+}
