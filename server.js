@@ -8,7 +8,7 @@ const admin = require('firebase-admin');
 const bcrypt = require('bcrypt');
 const app = express();
 const PORT = process.env.PORT || 5000;
-const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
+const BASE_URL = process.env.BASE_URL || "https://cnc-fb.onrender.com";
 
 // Firebase Admin Initialization (for Render)
 let db = null;
